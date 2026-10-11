@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101827">
+    <meta
+        name="description"
+        content="Compare development and production environments to identify dependency mismatches and configuration drift."
+    >
+
+    <title>DriftDetect | Environment Analyzer</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/app.js" defer></script>
+</head>
+
+<body>
+    <div class="app-shell">
+
+        <!-- Header -->
+        <header class="topbar">
+            <a class="brand" href="/" aria-label="DriftDetect home">
+                <span class="brand-icon">D</span>
+                <span>DriftDetect</span>
+            </a>
+
+            <span class="status">
+                <span class="status-dot" aria-hidden="true"></span>
+                Analyzer ready
+            </span>
+        </header>
+
+        <main>
+
+            <!-- Hero section -->
+            <section class="hero">
+                <p class="eyebrow">ENVIRONMENT INTELLIGENCE</p>
+
+                <h1>
+                    It works on my machine.
+                    <br>
+                    <span>Find out why it doesn't on yours.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Compare development and production environment reports to
+                    identify dependency mismatches, Python version differences,
+                    and missing configuration.
+                </p>
+            </section>
+
+            <!-- Collector download section -->
+            <section
+                class="panel collector-panel"
+                aria-labelledby="collector-heading"
+            >
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">GET STARTED</p>
+                        <h2 id="collector-heading">
+                            First, collect your environments
+                        </h2>
+                    </div>
+
+                    <span class="file-format">Python script</span>
+                </div>
+
+                <p class="collector-description">
+                    Download the collector and run it separately in your
+                    development and production environments to generate
+                    the JSON reports required for comparison.
+                </p>
+
+                <a
+                    class="download-collector"
+                    href="/download/collector"
+                >
+                    <span aria-hidden="true">↓</span>
+                    Download Collector
+                </a>
+
+                <div class="instructions">
+                    <h3>How to generate your reports</h3>
+
+                    <p>
+                        <strong>1.</strong>
+                        Download the collector script.
+                    </p>
+
+                    <p>
+                        <strong>2.</strong>
+                        Run it in your development environment:
+                    </p>
+
+                    <pre><code>python driftdetect.py --name development --output development.json</code></pre>
+
+                    <p>
+                        <strong>3.</strong>
+                        Run it separately in your production environment:
+                    </p>
+
+                    <pre><code>python driftdetect.py --name production --output production.json</code></pre>
+
+                    <p>
+                        <strong>4.</strong>
+                        Upload both JSON reports in the section below.
+                    </p>
+                </div>
+
+                <p class="privacy-note collector-privacy">
+                    The collector records environment metadata and whether
+                    selected configuration variables exist, not their values.
+                    Review each report before uploading it.
+                </p>
+            </section>
+
+            <!-- Environment comparison form -->
+            <section
+                class="panel upload-panel"
+                aria-labelledby="compare-heading"
+            >
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">STEP 01</p>
+                        <h2 id="compare-heading">Compare environments</h2>
+                    </div>
+
+                    <span class="file-format">JSON reports</span>
+                </div>
+
+                <form id="compare-form">
+                    <div class="upload-grid">
+
+                        <!-- Development report -->
+                        <label
+                            class="upload-card"
+                            for="development-file"
+                        >
+                            <span class="upload-icon">01</span>
+
+                            <span class="upload-title">
+                                Development
+                            </span>
+
+                            <span class="upload-description">
+                                Your working environment report
+                            </span>
+
+                            <span class="file-picker">
+                                <span
+                                    class="file-picker-text"
+                                    id="development-filename"
+                                >
+                                    Choose JSON file
+                                </span>
+
+                                <span class="browse-label">
+                                    Browse
+                                </span>
+                            </span>
+
+                            <input
+                                id="development-file"
+                                name="development_file"
+                                type="file"
+                                accept=".json,application/json"
+                                aria-label="Choose development environment JSON report"
+                                required
+                            >
+                        </label>
+
+                        <!-- Production report -->
+                        <label
+                            class="upload-card"
+                            for="production-file"
+                        >
+                            <span class="upload-icon production-icon">
+                                02
+                            </span>
+
+                            <span class="upload-title">
+                                Production
+                            </span>
+
+                            <span class="upload-description">
+                                The environment where the problem occurs
+                            </span>
+
+                            <span class="file-picker">
+                                <span
+                                    class="file-picker-text"
+                                    id="production-filename"
+                                >
+                                    Choose JSON file
+                                </span>
+
+                                <span class="browse-label">
+                                    Browse
+                                </span>
+                            </span>
+
+                            <input
+                                id="production-file"
+                                name="production_file"
+                                type="file"
+                                accept=".json,application/json"
+                                aria-label="Choose production environment JSON report"
+                                required
+                            >
+                        </label>
+
+                    </div>
+
+                    <div class="form-footer">
+                        <p class="privacy-note">
+                            Reports are analyzed in memory and aren't saved
+                            by this endpoint. Never upload secrets or
+                            sensitive production data.
+                        </p>
+
+                        <button
+                            id="compare-button"
+                            type="submit"
+                        >
+                            <span id="button-label">
+                                Analyze differences
+                            </span>
+
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
+
+                    <p
+                        id="error-message"
+                        class="error-message"
+                        role="alert"
+                        hidden
+                    ></p>
+                </form>
+            </section>
+
+            <!-- Analysis results -->
+            <section
+                id="results-section"
+                class="results-section"
+                aria-labelledby="results-heading"
+                hidden
+            >
+                <div class="results-heading">
+                    <div>
+                        <p class="eyebrow">STEP 02</p>
+
+                        <h2 id="results-heading">
+                            Analysis results
+                        </h2>
+
+                        <p
+                            id="results-summary"
+                            class="muted"
+                            aria-live="polite"
+                        ></p>
+                    </div>
+
+                    <button
+                        id="reset-button"
+                        class="secondary-button"
+                        type="button"
+                    >
+                        Clear results
+                    </button>
+                </div>
+
+                <!-- Severity summary -->
+                <div class="summary-grid">
+                    <article class="summary-card">
+                        <span class="summary-label">
+                            Total findings
+                        </span>
+                        <strong id="total-count">0</strong>
+                    </article>
+
+                    <article class="summary-card">
+                        <span class="summary-label">
+                            High severity
+                        </span>
+                        <strong id="high-count" class="high-text">0</strong>
+                    </article>
+
+                    <article class="summary-card">
+                        <span class="summary-label">
+                            Medium severity
+                        </span>
+                        <strong id="medium-count" class="medium-text">0</strong>
+                    </article>
+
+                    <article class="summary-card">
+                        <span class="summary-label">
+                            Low severity
+                        </span>
+                        <strong id="low-count" class="low-text">0</strong>
+                    </article>
+                </div>
+
+                <!-- Findings are inserted by app.js -->
+                <div
+                    id="findings-list"
+                    class="findings-list"
+                    aria-live="polite"
+                ></div>
+
+                <button
+                    id="download-button"
+                    class="secondary-button download-button"
+                    type="button"
+                >
+                    Download analysis report
+                </button>
+            </section>
+
+            <!-- Footer -->
+            <footer>
+                <span>DriftDetect</span>
+                <span>Environment comparison · Early development</span>
+            </footer>
+
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+    "environment_name": "production",
+    "collected_at": "2026-10-11T06:15:46.278054+00:00",
+    "python_version": "3.10.11",
+    "python_implementation": "CPython",
+    "os": "Windows",
+    "os_release": "10",
+    "architecture": "AMD64",
+    "packages": {
+        "packaging": "26.3",
+        "pip": "23.0.1",
+        "setuptools": "65.5.0"
+    },
+    "configuration_presence": {
+        "DATABASE_URL": false,
+        "GROQ_API_KEY": false,
+        "API_BASE_URL": false
+    }
+}
